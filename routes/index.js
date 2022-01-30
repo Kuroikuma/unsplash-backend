@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const imageController = require('../Controllers/imageController')
+const imageController = require('../controllers/imageController')
 
 module.exports = function () {
   router.post('/image', imageController.add)
