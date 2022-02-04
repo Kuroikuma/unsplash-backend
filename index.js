@@ -6,7 +6,29 @@ const app = require('./app')
 
 const server = http.createServer(app)
 
-const io = socketIo(server)
+const io = socketIo(server, {
+  cors: {
+    allowedHeaders: [
+      'X-ACCESS_TOKEN',
+      'Access-Control-Allow-Origin',
+      'Authorization',
+      'Origin',
+      'x-requested-with',
+      'Content-Type',
+      'Content-Range',
+      'Content-Disposition',
+      'Content-Description',
+    ],
+    credentials: true,
+    methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+    origin: [
+      'https://kuroikuma.github.io/unsplash-app/',
+      'https://kuroikuma.github.io/unsplash-app',
+      'http://10.0.2.2:5001',
+    ],
+    preflightContinue: false,
+  },
+})
 
 io.on('connection', (socket) => {
   console.log('New client connected')
