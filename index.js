@@ -1,34 +1,26 @@
 require('./db/mongoDB.js')
-const express = require('express')
-const bodyParser = require('body-parser')
-const cors = require('cors')
+const http = require('http')
+const socketIo = require('socket.io')
+const imageController = require('./controllers/imageController')
+const app = require('./app')
 
-const routes = require('./routes')
+const server = http.createServer(app)
 
-const app = express()
+const io = socketIo(server)
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+io.on('connection', (socket) => {
+  console.log('New client connected')
+  socket.on('addImage', async (response) => {
+    console.log(response)
+    const showEmit = await imageController.show()
+    io.emit('loadImage', showEmit)
+  })
 
-app.use(cors())
-
-app.use('/', routes())
-
-app.use((error, request, response, next) => {
-  console.error(error.name)
-  switch (error.name) {
-    case 'CastError':
-      response.status(400).send({ error: 'id mal formado' })
-      break
-    case 'ReferenceError':
-      response.status(500).send({ error: 'Error interno' })
-      break
-    default:
-      response.status(500).end()
-      break
-  }
+  socket.on('disconnect', () => {
+    console.log('Client disconnected')
+  })
 })
 
-app.listen(process.env.PORT || 3001, function () {
+server.listen(process.env.PORT || 3001, function () {
   console.log(`Server de Portafolio levantado en Port:${process.env.PORT}`)
 })
