@@ -5,12 +5,12 @@ const imageController = require('../controllers/imageController')
 
 module.exports = function () {
   router.get('/', (req, res) => {
-    res.send('Hello World')
+    res.send(`<h1>Hello World<h1>`)
   })
-  router.post('/image', imageController.add)
-  router.get('/image', imageController.show)
-  router.get('/image/:id', imageController.showById)
-  router.get('/image/label/:label', imageController.showByLabel)
-  router.delete('/image/:id', imageController.deleteById)
+  router.post('/api/image', imageController.add)
+  router.get('/api/image', imageController.show)
+  router.get('/api/image/:id', imageController.showById)
+  router.get('/api/image/label/:label', imageController.showByLabel)
+  router.delete('/api/image/:id', imageController.deleteById)
   return router
 }

@@ -1,4 +1,5 @@
 require('./db/mongoDB.js')
+const Image = require('./models/imagesModel')
 const http = require('http')
 const socketIo = require('socket.io')
 const imageController = require('./controllers/imageController')
@@ -25,23 +26,47 @@ const io = socketIo(server, {
       'https://kuroikuma.github.io/unsplash-app/',
       'https://kuroikuma.github.io/unsplash-app',
       'https://kuroikuma.github.io',
+      'http://localhost:3000',
     ],
     preflightContinue: false,
   },
 })
 
+let interval
+
 io.on('connection', (socket) => {
   console.log('New client connected')
-  socket.on('addImage', async (response) => {
+
+  socket.on('client:addImage', (response) => {
     console.log(response)
-    const showEmit = await imageController.show()
-    io.emit('loadImage', showEmit)
+    if (interval) {
+      clearTimeout(interval)
+    }
+    interval = setTimeout(() => {
+      getApiAndEmit(socket)
+    }, 1000)
+  })
+
+  socket.on('client:deleteImage', (response) => {
+    console.log(response)
+    if (interval) {
+      clearTimeout(interval)
+    }
+    interval = setTimeout(() => {
+      getApiAndEmit(socket)
+    }, 1000)
   })
 
   socket.on('disconnect', () => {
     console.log('Client disconnected')
+    clearTimeout(interval)
   })
 })
+
+const getApiAndEmit = async (socket) => {
+  const showEmit = await Image.find({})
+  socket.broadcast.emit('server:loadImage', showEmit)
+}
 
 server.listen(process.env.PORT || 3001, function () {
   console.log(`Server de Portafolio levantado en Port:${process.env.PORT}`)
