@@ -24,7 +24,7 @@ const io = socketIo(server, {
     origin: [
       'https://kuroikuma.github.io/unsplash-app/',
       'https://kuroikuma.github.io/unsplash-app',
-      'http://10.0.2.2:5001',
+      'https://kuroikuma.github.io',
     ],
     preflightContinue: false,
   },
