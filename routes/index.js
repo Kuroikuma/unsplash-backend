@@ -4,6 +4,9 @@ const router = express.Router()
 const imageController = require('../controllers/imageController')
 
 module.exports = function () {
+  router.get('/', (req, res) => {
+    res.send('Hello World')
+  })
   router.post('/image', imageController.add)
   router.get('/image', imageController.show)
   router.get('/image/:id', imageController.showById)
